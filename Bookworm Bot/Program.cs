@@ -1,67 +1,76 @@
-﻿namespace Bookworm_Bot
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace Bookworm_Bot
 {
-    internal class Program
-    {
-        static void Main()
-        {
-            List<string> validWords = new();
+	internal class Program
+	{
+		static void Main()
+		{
+			string[] validWords = File.ReadAllLines("F:\\source\\Bookworm Bot\\Bookworm Bot\\Word Banks\\words.txt");
+			
+			Console.Write("Enter each letter ('q' automatically becomes 'qu') — press Backspace to finish: ");
 
-            #region Read Text files containing valid words
-            string[] fileNames = { "colors.txt", "mammals.txt", "metals.txt", "words.txt" };
-            foreach (string fileName in fileNames)
-            {
-                using StreamReader reader = new($"C:\\Users\\jrsco\\source\\repos\\Bookworm Bot\\Bookworm Bot\\Word Banks\\{fileName}");
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    validWords.Add(line);
-                }
-            }
-            #endregion
+			List<char> letters = [];
+			ConsoleKey input = ConsoleKey.None;
 
-            Console.Write("Enter the letters all together ('q' for 'qu'): ");
-            string letters = Console.ReadLine();
+			while (input != ConsoleKey.Backspace)
+			{
+				ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
+				input = keyInfo.Key;
 
-            List<string> words = GenerateCombinations(letters, validWords);
-            foreach (string word in words)
-            {
-                Console.WriteLine(word);
-            }
-        }
+				if (input == ConsoleKey.Backspace)
+					break;
 
-        public static List<string> GenerateCombinations(string input, List<string> validWords)
-        {
-            // Create an empty list to store the results
-            List<string> result = new();
+				char c = keyInfo.KeyChar;
 
-            // Calculate the power set size
-            int npow = 1 << input.Length;
+				// Echo the character
+				Console.Write(c);
+				letters.Add(c);
 
-            // Loop over the power set
-            for (int i = 0; i < npow; i++)
-            {
-                // Initialize an empty string for each combination
-                string combination = string.Empty;
+				// If user typed 'q', automatically append 'u'
+				if (c == 'q')
+				{
+					letters.Add('u');
+					Console.Write('u');
+				}
+			}
 
-                // Loop over the characters in the input string
-                for (int j = 0; j < input.Length; j++)
-                {
-                    // If the jth bit in i is set, add the jth character of the input string to the combination
-                    if ((i & (1 << j)) != 0)
-                    {
-                        combination += input[j];
-                    }
-                }
+			Console.WriteLine();
 
-                // If the combination is not empty and is in the validWords list, add it to the result list
-                if (!string.IsNullOrEmpty(combination) && validWords.Contains(combination))
-                {
-                    result.Add(combination);
-                }
-            }
+			List<string> words = GenerateCombinations(letters, validWords);
+			foreach (string word in words)
+			{
+				Console.WriteLine(word);
+			}
+		}
 
-            // Return the result list
-            return result;
-        }
-    }
+		public static List<string> GenerateCombinations(List<char> letters, string[] validWords)
+		{
+			List<string> result = [];
+
+			int npow = 1 << letters.Count;
+
+			for (int i = 0; i < npow; i++)
+			{
+				string combination = string.Empty;
+
+				for (int j = 0; j < letters.Count; j++)
+				{
+					if ((i & (1 << j)) != 0)
+					{
+						combination += letters[j];
+					}
+				}
+
+				if (!string.IsNullOrEmpty(combination) && validWords.Contains(combination))
+				{
+					result.Add(combination);
+				}
+			}
+
+			return result;
+		}
+	}
 }
