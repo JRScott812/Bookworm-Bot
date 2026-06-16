@@ -1,6 +1,6 @@
 using System;
 
-namespace Bookworm_Bot
+namespace Bookworm_Bot_Class
 {
 	internal enum GemType
 	{

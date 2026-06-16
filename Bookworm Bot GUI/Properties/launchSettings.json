@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Bookworm Bot GUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Bookworm Bot GUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

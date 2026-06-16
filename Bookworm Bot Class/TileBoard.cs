@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Bookworm_Bot
+namespace Bookworm_Bot_Class
 {
 	internal static class TileBoard
 	{

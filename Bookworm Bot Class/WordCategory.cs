@@ -1,6 +1,6 @@
 using System;
 
-namespace Bookworm_Bot
+namespace Bookworm_Bot_Class
 {
 	[Flags]
 	internal enum WordCategory

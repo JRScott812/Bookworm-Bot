@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 
-namespace Bookworm_Bot
+namespace Bookworm_Bot_Class
 {
 	internal readonly record struct WordResult(
 		string Word,

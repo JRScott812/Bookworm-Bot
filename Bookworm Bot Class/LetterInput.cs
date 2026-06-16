@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Bookworm_Bot
+namespace Bookworm_Bot_Class
 {
 	internal static class LetterInput
 	{

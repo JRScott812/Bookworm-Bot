@@ -1,3 +1,9 @@
 <Solution>
-  <Project Path="Bookworm Bot/Bookworm Bot.csproj" />
+  <Project Path="Bookworm Bot Class/Bookworm Bot.csproj" Id="4b0907bd-4760-4c43-a35e-a7c8226c4d54" />
+  <Project Path="Bookworm Bot GUI/Bookworm Bot GUI.csproj" Id="9107eba4-0b96-42e7-b535-2986a2d52e43">
+    <Platform Project="x64" />
+    <Deploy />
+  </Project>
+  <Project Path="Bookworm Bot Tests/Bookworm Bot Tests.csproj" Id="88ef4665-7a3c-48b1-85c1-78f3da2d95c8" />
+  <Project Path="Bookworm Bot CLI/Bookworm Bot CLI.csproj" />
 </Solution>
