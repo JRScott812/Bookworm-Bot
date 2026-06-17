@@ -1,0 +1,8 @@
+<Project>
+	<ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj' and '$(IsTestProject)' != 'true'">
+		<None Include="$(MSBuildThisFileDirectory)Word Banks\**\*">
+			<Link>Word Banks\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>

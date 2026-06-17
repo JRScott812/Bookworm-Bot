@@ -1,11 +1,36 @@
 ﻿<Project Sdk="MSTest.Sdk/4.0.2">
-
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <RootNamespace>Bookworm_Bot_Tests</RootNamespace>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\Bookworm Bot Class\Bookworm Bot Classes.csproj" />
+    <ProjectReference Include="..\Bookworm Bot Automation\Bookworm Bot Automation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="TestData\mini-wordbank\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\cell-w-tan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Testing.Extensions.CodeCoverage" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Testing.Extensions.TrxReport" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="MSTest.TestAdapter" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="MSTest.TestFramework" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.1.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="2.0.2" />
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.2.0" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="4.0.2" />
+    <PackageVersion Include="MSTest.TestFramework" Version="4.0.2" />
+    <PackageVersion Include="System.Drawing.Common" Version="9.0.6" />
+  </ItemGroup>
+</Project>

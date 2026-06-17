@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<UserControl
+
+	x:Class="Bookworm_Bot_GUI.Controls.TileCellControl"
+
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+
+	<Border x:Name="TileBorder"
+
+			Width="72" Height="72"
+
+			CornerRadius="8"
+
+			BorderThickness="1"
+
+			PointerPressed="TileBorder_PointerPressed">
+
+		<Grid>
+
+			<TextBlock x:Name="ModifierBadge"
+
+					   Margin="4,2,0,0"
+
+					   HorizontalAlignment="Left"
+
+					   VerticalAlignment="Top"
+
+					   FontSize="14"
+
+					   IsHitTestVisible="False" />
+
+			<TextBox x:Name="LetterBox"
+
+					 Margin="8,10,8,10"
+
+					 HorizontalAlignment="Stretch"
+
+					 VerticalAlignment="Stretch"
+
+					 HorizontalContentAlignment="Center"
+
+					 VerticalContentAlignment="Center"
+
+					 FontSize="26"
+
+					 FontWeight="SemiBold"
+
+					 MaxLength="2"
+
+					 BorderThickness="0"
+
+					 Background="Transparent"
+
+					 TextAlignment="Center"
+
+					 PlaceholderText="+"
+
+					 GotFocus="LetterBox_GotFocus"
+
+					 LostFocus="LetterBox_LostFocus"
+
+					 KeyDown="LetterBox_KeyDown" />
+
+		</Grid>
+
+	</Border>
+
+</UserControl>
+

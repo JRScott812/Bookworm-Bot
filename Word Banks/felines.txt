@@ -1,0 +1,11 @@
+bobcat
+cat
+cheetah
+cougar
+jaguar
+leopard
+lion
+lynx
+ocelot
+panther
+tiger

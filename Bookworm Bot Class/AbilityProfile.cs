@@ -3,113 +3,131 @@ using System.Collections.Generic;
 
 namespace Bookworm_Bot_Class
 {
-	internal sealed class AbilityProfile
+	public sealed class AbilityProfile
 	{
+		public Loadout Loadout { get; set; } = new();
+		public SessionContext Session { get; set; } = new();
+		public FightContext? Fight { get; set; }
 		public WordCategory EnemyWeakness { get; set; }
 		public float EnemyWeaknessMultiplier { get; set; } = 3f;
 
-		public bool TomeOfAncients { get; set; }
-		public bool TabletOfTheAges { get; set; }
-		public bool HandOfHercules { get; set; }
-		public bool WolfbaneNecklace { get; set; }
-		public bool SlayerTalisman { get; set; }
-
-		public float CalculateDamage(string word, WordCategory categories, float gemBonus = 0f)
+		public float CalculateDamage(
+			string word,
+			WordCategory categories,
+			float gemBonus = 0f,
+			IReadOnlyList<Tile>? usedTilesInOrder = null)
 		{
-			float damage = GetBaseDamage(word);
-			float bonusPercent = gemBonus + GetTreasureBonusPercent(categories);
-
-			if (bonusPercent > 0f)
-				damage *= 1f + bonusPercent;
-
-			if (EnemyWeakness != WordCategory.None
-				&& categories != WordCategory.None
-				&& categories.HasFlag(EnemyWeakness))
+			if (usedTilesInOrder is { Count: > 0 })
 			{
-				damage *= EnemyWeaknessMultiplier;
+				return DamageCalculator.CalculateDamage(this, word, categories, usedTilesInOrder);
 			}
 
-			return damage;
-		}
-
-		public IReadOnlyList<string> DescribeBonuses(string word, WordCategory categories, float gemBonus = 0f)
-		{
-			List<string> bonuses = [];
-
-			if (categories != WordCategory.None)
-				bonuses.Add(FormatCategories(categories));
-
-			float treasureBonus = GetTreasureBonusPercent(categories);
-			if (treasureBonus > 0f)
-				bonuses.Add($"+{treasureBonus * 100:0}% treasure");
-
+			List<Tile> syntheticTiles = BuildSyntheticTiles(word);
 			if (gemBonus > 0f)
-				bonuses.Add($"+{gemBonus * 100:0}% gems");
-
-			if (EnemyWeakness != WordCategory.None
-				&& categories.HasFlag(EnemyWeakness))
 			{
-				bonuses.Add($"{EnemyWeaknessMultiplier:0.#}x enemy weakness");
+				ApplySyntheticGemBonus(syntheticTiles, gemBonus);
 			}
 
-			return bonuses;
+			return DamageCalculator.CalculateDamage(this, word, categories, syntheticTiles);
 		}
 
-		private float GetTreasureBonusPercent(WordCategory categories)
+		public IReadOnlyList<string> DescribeBonuses(
+			string word,
+			WordCategory categories,
+			float gemBonus = 0f,
+			IReadOnlyList<Tile>? usedTilesInOrder = null)
 		{
-			float bonus = 0f;
-
-			if (categories.HasFlag(WordCategory.Colors))
+			if (usedTilesInOrder is { Count: > 0 })
 			{
-				if (TabletOfTheAges)
-					bonus += 1.50f;
-				else if (TomeOfAncients)
-					bonus += 1.00f;
+				return DamageCalculator.DescribeBonuses(this, word, categories, usedTilesInOrder);
 			}
 
-			if (categories.HasFlag(WordCategory.Metals) && HandOfHercules)
-				bonus += 0.50f;
-
-			if (categories.HasFlag(WordCategory.Mammals))
+			List<Tile> syntheticTiles = BuildSyntheticTiles(word);
+			if (gemBonus > 0f)
 			{
-				if (SlayerTalisman)
-					bonus += 0.75f;
-				else if (WolfbaneNecklace)
-					bonus += 0.50f;
+				ApplySyntheticGemBonus(syntheticTiles, gemBonus);
 			}
 
-			return bonus;
+			return DamageCalculator.DescribeBonuses(this, word, categories, syntheticTiles);
 		}
 
-		internal static float GetBaseDamage(string word)
+		public static float GetBaseDamage(string word) => GetBaseDamageFromLength(CalculateAdjustedLength(word));
+
+		public static float GetBaseDamageFromLength(int adjustedLength)
 		{
-			int adjustedLength = CalculateAdjustedLength(word);
-			if (adjustedLength < Solver.MinWordLength)
-				return 0f;
-
-			if (adjustedLength < BaseDamageByAdjustedLength.Length)
-				return BaseDamageByAdjustedLength[adjustedLength];
-
-			return BaseDamageByAdjustedLength[^1];
+			return adjustedLength < Solver.MinWordLength
+				? 0f
+				: adjustedLength < BaseDamageByAdjustedLength.Length
+				? BaseDamageByAdjustedLength[adjustedLength]
+				: BaseDamageByAdjustedLength[^1];
 		}
 
-		internal static int CalculateAdjustedLength(string word)
+		public static int CalculateAdjustedLength(string word) => CalculateAdjustedLength(word, loadout: null);
+
+		public static int CalculateAdjustedLength(string word, Loadout? loadout) => CalculateAdjustedLengthCore(word, loadout, usedTilesInOrder: null);
+
+		public static int CalculateAdjustedLength(
+					string word,
+					IReadOnlyList<Tile> usedTilesInOrder,
+					Loadout loadout) => CalculateAdjustedLengthCore(word, loadout, usedTilesInOrder);
+
+		private static int CalculateAdjustedLengthCore(
+			string word,
+			Loadout? loadout,
+			IReadOnlyList<Tile>? usedTilesInOrder)
 		{
 			float total = 0f;
-
+			int tileIndex = 0;
 			for (int index = 0; index < word.Length; index++)
 			{
 				if (word[index] == 'q' && index + 1 < word.Length && word[index + 1] == 'u')
 				{
 					total += 2.75f;
+					if (usedTilesInOrder is not null)
+					{
+						tileIndex++;
+					}
+
 					index++;
 					continue;
 				}
 
-				total += GetLetterWeight(word[index]);
+				if (usedTilesInOrder is not null && tileIndex < usedTilesInOrder.Count)
+				{
+					total += GetTreasureLetterWeight(usedTilesInOrder[tileIndex].Letter, loadout);
+					tileIndex++;
+				}
+				else
+				{
+					total += GetTreasureLetterWeight(word[index], loadout);
+				}
 			}
 
 			return (int)Math.Ceiling(total);
+		}
+
+		private static float GetTreasureLetterWeight(char letter, Loadout? loadout)
+		{
+			letter = char.ToLowerInvariant(letter);
+			if (loadout is not null)
+			{
+				if (loadout.Has(TreasureId.ArchOfXyzzy) && letter is 'x' or 'y' or 'z')
+				{
+					return 3f;
+				}
+
+				if (loadout.Has(TreasureId.BowOfZyx) && letter is 'x' or 'y' or 'z')
+				{
+					return 2.5f;
+				}
+
+				if (loadout.Has(TreasureId.WoodenParrot) && letter == 'r')
+				{
+					return 2f;
+				}
+			}
+
+			return GetLetterWeight(letter);
 		}
 
 		private static float GetLetterWeight(char letter)
@@ -125,17 +143,38 @@ namespace Bookworm_Bot_Class
 			};
 		}
 
-		private static string FormatCategories(WordCategory categories)
+		private static List<Tile> BuildSyntheticTiles(string word)
 		{
-			List<string> names = [];
-			if (categories.HasFlag(WordCategory.Colors))
-				names.Add("color");
-			if (categories.HasFlag(WordCategory.Metals))
-				names.Add("metal");
-			if (categories.HasFlag(WordCategory.Mammals))
-				names.Add("mammal");
+			List<Tile> tiles = [];
+			for (int index = 0; index < word.Length; index++)
+			{
+				if (word[index] == 'q' && index + 1 < word.Length && word[index + 1] == 'u')
+				{
+					tiles.Add(new Tile('q'));
+					index++;
+					continue;
+				}
 
-			return string.Join("/", names);
+				tiles.Add(new Tile(word[index]));
+			}
+
+			return tiles;
+		}
+
+		private static void ApplySyntheticGemBonus(List<Tile> tiles, float gemBonus)
+		{
+			if (tiles.Count == 0)
+			{
+				return;
+			}
+
+			tiles[0] = new Tile(tiles[0].Letter, GemType.Ruby);
+			float remaining = gemBonus - tiles[0].DamageBonus;
+			for (int index = 1; index < tiles.Count && remaining > 0.01f; index++)
+			{
+				tiles[index] = new Tile(tiles[index].Letter, GemType.Amethyst);
+				remaining -= tiles[index].DamageBonus;
+			}
 		}
 
 		private static readonly float[] BaseDamageByAdjustedLength =

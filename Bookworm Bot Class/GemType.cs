@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace Bookworm_Bot_Class
 {
-	internal enum GemType
+	public enum GemType
 	{
 		None = 0,
 		Amethyst,
@@ -14,10 +15,9 @@ namespace Bookworm_Bot_Class
 		Diamond
 	}
 
-	internal readonly record struct Tile(char Letter, GemType Gem = GemType.None)
+	public readonly record struct Tile(char Letter, GemType Gem = GemType.None)
 	{
 		public float DamageBonus => GemBonuses.GetDamageBonus(Gem);
-
 		public string Display =>
 			Letter == 'q'
 				? Gem == GemType.None ? "qu" : $"qu({GemBonuses.ShortName(Gem)})"
@@ -26,47 +26,57 @@ namespace Bookworm_Bot_Class
 					: $"{Letter}({GemBonuses.ShortName(Gem)})";
 	}
 
-	internal static class GemBonuses
+	public static class GemBonuses
 	{
 		public static float GetDamageBonus(GemType gem) => gem switch
 		{
-			GemType.Amethyst => 0.15f,
-			GemType.Emerald => 0.20f,
-			GemType.Sapphire => 0.25f,
-			GemType.Garnet => 0.30f,
-			GemType.Ruby => 0.35f,
-			GemType.Crystal => 0.50f,
-			GemType.Diamond => 1.00f,
-			_ => 0f
+			GemType.Amethyst	=> 0.15f,
+			GemType.Emerald		=> 0.20f,
+			GemType.Sapphire	=> 0.25f,
+			GemType.Garnet		=> 0.30f,
+			GemType.Ruby		=> 0.35f,
+			GemType.Crystal		=> 0.50f,
+			GemType.Diamond		=> 1.00f,
+			_					=> 0f
 		};
 
 		public static string ShortName(GemType gem) => gem switch
 		{
-			GemType.Amethyst => "amethyst",
-			GemType.Emerald => "emerald",
-			GemType.Sapphire => "sapphire",
-			GemType.Garnet => "garnet",
-			GemType.Ruby => "ruby",
-			GemType.Crystal => "crystal",
-			GemType.Diamond => "diamond",
-			_ => string.Empty
+			GemType.Amethyst	=> "amethyst",
+			GemType.Emerald		=> "emerald",
+			GemType.Sapphire	=> "sapphire",
+			GemType.Garnet		=> "garnet",
+			GemType.Ruby		=> "ruby",
+			GemType.Crystal		=> "crystal",
+			GemType.Diamond		=> "diamond",
+			_					=> string.Empty
 		};
 
-		public static bool TryParse(ReadOnlySpan<char> name, out GemType gem)
+		private static readonly Dictionary<string, GemType> Aliases = new(StringComparer.OrdinalIgnoreCase)
 		{
-			gem = name.ToString().ToLowerInvariant() switch
-			{
-				"a" or "amethyst" or "amy" => GemType.Amethyst,
-				"em" or "emerald" => GemType.Emerald,
-				"s" or "sapphire" or "sap" => GemType.Sapphire,
-				"g" or "garnet" or "gar" => GemType.Garnet,
-				"r" or "ruby" or "rub" => GemType.Ruby,
-				"c" or "crystal" or "cry" => GemType.Crystal,
-				"d" or "diamond" or "dia" => GemType.Diamond,
-				_ => GemType.None
-			};
+			["a"] = GemType.Amethyst,
+			["amethyst"] = GemType.Amethyst,
+			["amy"] = GemType.Amethyst,
+			["em"] = GemType.Emerald,
+			["emerald"] = GemType.Emerald,
+			["s"] = GemType.Sapphire,
+			["sapphire"] = GemType.Sapphire,
+			["sap"] = GemType.Sapphire,
+			["g"] = GemType.Garnet,
+			["garnet"] = GemType.Garnet,
+			["gar"] = GemType.Garnet,
+			["r"] = GemType.Ruby,
+			["ruby"] = GemType.Ruby,
+			["rub"] = GemType.Ruby,
+			["c"] = GemType.Crystal,
+			["crystal"] = GemType.Crystal,
+			["cry"] = GemType.Crystal,
+			["d"] = GemType.Diamond,
+			["diamond"] = GemType.Diamond,
+			["dia"] = GemType.Diamond,
+		};
 
-			return gem != GemType.None;
-		}
+		public static bool TryParse(ReadOnlySpan<char> name, out GemType gem) =>
+			Aliases.TryGetValue(name.ToString(), out gem);
 	}
 }

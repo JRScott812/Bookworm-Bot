@@ -1,0 +1,10 @@
+cat
+dog
+gold
+iron
+zinc
+bear
+fish
+wax
+quiz
+quack

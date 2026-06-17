@@ -1,0 +1,8 @@
+bone
+bones
+skull
+skeleton
+rib
+ribs
+spine
+marrow

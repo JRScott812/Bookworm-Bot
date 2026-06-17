@@ -1,19 +1,268 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <Window
-    x:Class="Bookworm_Bot_GUI.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Bookworm_Bot_GUI"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Title="Bookworm Bot GUI">
+	x:Class="Bookworm_Bot_GUI.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Bookworm_Bot_GUI"
+	xmlns:controls="using:Bookworm_Bot_GUI.Controls"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Title="Bookworm Bot">
 
-    <Window.SystemBackdrop>
-        <MicaBackdrop />
-    </Window.SystemBackdrop>
+	<Grid x:Name="RootGrid" Background="{ThemeResource LayerFillColorDefaultBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 
-    <Grid>
+		<Border Grid.Row="0"
+				Padding="16,12"
+				Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+				BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+				BorderThickness="0,0,0,1">
+			<Grid ColumnSpacing="12">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<StackPanel Spacing="2">
+					<TextBlock Text="Bookworm Bot"
+							   Style="{StaticResource TitleTextBlockStyle}"
+							   Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+					<TextBlock x:Name="SubtitleText"
+							   Style="{StaticResource CaptionTextBlockStyle}"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+							   Text="Loading dictionary..." />
+				</StackPanel>
+				<StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2" HorizontalAlignment="Right">
+					<TextBlock x:Name="BoardCountBadge"
+							   Style="{StaticResource CaptionTextBlockStyle}"
+							   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+							   HorizontalAlignment="Right"
+							   Text="No board" />
+					<TextBlock x:Name="ResultsCountBadge"
+							   Style="{StaticResource CaptionTextBlockStyle}"
+							   HorizontalAlignment="Right"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+							   Text="" />
+				</StackPanel>
+				<ComboBox Grid.Column="2"
+						  x:Name="ThemeCombo"
+						  MinWidth="120"
+						  VerticalAlignment="Center"
+						  SelectionChanged="ThemeCombo_SelectionChanged">
+					<ComboBoxItem Tag="Auto">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
+							<TextBlock Text="Auto" />
+						</StackPanel>
+					</ComboBoxItem>
+					<ComboBoxItem Tag="Light">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE706;" />
+							<TextBlock Text="Light" />
+						</StackPanel>
+					</ComboBoxItem>
+					<ComboBoxItem Tag="Dark">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE708;" />
+							<TextBlock Text="Dark" />
+						</StackPanel>
+					</ComboBoxItem>
+				</ComboBox>
+			</Grid>
+		</Border>
 
-    </Grid>
+		<ScrollViewer Grid.Row="1" Padding="16,12" VerticalScrollBarVisibility="Auto">
+			<Grid ColumnSpacing="16" RowSpacing="12" MaxWidth="980">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" MinWidth="280" />
+					<ColumnDefinition Width="*" MinWidth="340" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<Border Grid.Column="0" Grid.Row="0"
+						Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+						BorderThickness="1"
+						CornerRadius="8"
+						Padding="12">
+					<StackPanel Spacing="10">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE7C3;" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+							<TextBlock Text="Loadout"
+									   Style="{StaticResource SubtitleTextBlockStyle}"
+									   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+									   VerticalAlignment="Center" />
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<TextBlock Text="Enemy" VerticalAlignment="Center" Width="72" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+							<ComboBox x:Name="EnemyCombo" MinWidth="200" SelectionChanged="LoadoutChanged" />
+						</StackPanel>
+						<StackPanel x:Name="ManualWeaknessPanel" Orientation="Horizontal" Spacing="8">
+							<TextBlock Text="Weakness" VerticalAlignment="Center" Width="72" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+							<ComboBox x:Name="WeaknessCombo" MinWidth="140" SelectionChanged="LoadoutChanged">
+								<ComboBoxItem Content="None" Tag="None" IsSelected="True" />
+								<ComboBoxItem Content="Colors" Tag="Colors" />
+								<ComboBoxItem Content="Metals" Tag="Metals" />
+								<ComboBoxItem Content="Mammals" Tag="Mammals" />
+								<ComboBoxItem Content="Felines" Tag="Felines" />
+								<ComboBoxItem Content="Bone" Tag="Bone" />
+								<ComboBoxItem Content="Fire" Tag="Fire" />
+								<ComboBoxItem Content="Fruits/Veg" Tag="FruitsAndVegetables" />
+							</ComboBox>
+							<NumberBox x:Name="WeaknessMultiplierBox" Value="3" Minimum="1" Maximum="10" Width="64"
+									   ValueChanged="WeaknessMultiplierChanged" />
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<TextBlock Text="Lex level" VerticalAlignment="Center" Width="72" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+							<NumberBox x:Name="LexLevelBox" Value="1" Minimum="1" Maximum="42" Width="64"
+									   ValueChanged="LexLevelChanged" />
+							<CheckBox x:Name="PowerUpCheckBox" Margin="8,0,0,0"
+									  Checked="LoadoutChanged" Unchecked="LoadoutChanged">
+								<CheckBox.Content>
+									<StackPanel Orientation="Horizontal" Spacing="6">
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE945;" FontSize="14" />
+										<TextBlock Text="Power Up" />
+									</StackPanel>
+								</CheckBox.Content>
+							</CheckBox>
+						</StackPanel>
+						<ComboBox x:Name="TreasureSlot1Combo" HorizontalAlignment="Stretch" SelectionChanged="LoadoutChanged" />
+						<ComboBox x:Name="TreasureSlot2Combo" HorizontalAlignment="Stretch" SelectionChanged="LoadoutChanged" />
+						<ComboBox x:Name="TreasureSlot3Combo" HorizontalAlignment="Stretch" SelectionChanged="LoadoutChanged" />
+					</StackPanel>
+				</Border>
+
+				<Border Grid.Column="1" Grid.Row="0"
+						Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+						BorderThickness="1"
+						CornerRadius="8"
+						Padding="12">
+					<StackPanel Spacing="10">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE80A;" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+							<TextBlock Text="Board"
+									   Style="{StaticResource SubtitleTextBlockStyle}"
+									   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+									   VerticalAlignment="Center" />
+						</StackPanel>
+						<controls:BoardGridControl x:Name="BoardGrid"
+												   StatusEditRequested="BoardGrid_StatusEditRequested"
+												   BoardChanged="BoardGrid_BoardChanged" />
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Button Content="Sample board" Style="{StaticResource AccentButtonStyle}" Click="SampleBoard_Click" />
+							<Button Content="Reset board" Click="ClearBoard_Click" />
+							<Button Content="Refresh words" Click="RefreshWords_Click" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+
+				<Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
+						Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+						BorderThickness="1"
+						CornerRadius="8"
+						Padding="12"
+						MinHeight="200">
+					<Grid RowSpacing="8">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Grid ColumnSpacing="8">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<StackPanel Orientation="Horizontal" Spacing="8">
+								<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8FD;" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+								<TextBlock Text="Top words"
+										   Style="{StaticResource SubtitleTextBlockStyle}"
+										   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+										   VerticalAlignment="Center" />
+							</StackPanel>
+							<Button Grid.Column="1"
+									x:Name="CopyWordButton"
+									IsEnabled="False"
+									Click="CopyWord_Click">
+								<StackPanel Orientation="Horizontal" Spacing="6">
+									<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+									<TextBlock Text="Copy word" />
+								</StackPanel>
+							</Button>
+						</Grid>
+						<ListView Grid.Row="1"
+								  x:Name="ResultsList"
+								  MinHeight="160"
+								  SelectionMode="Single"
+								  IsItemClickEnabled="True"
+								  DoubleTapped="ResultsList_DoubleTapped"
+								  SelectionChanged="ResultsList_SelectionChanged">
+							<ListView.ItemContainerStyle>
+								<Style TargetType="ListViewItem">
+									<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+									<Setter Property="Padding" Value="4,2" />
+								</Style>
+							</ListView.ItemContainerStyle>
+							<ListView.ItemTemplate>
+								<DataTemplate x:DataType="x:String">
+									<TextBlock FontFamily="Consolas"
+											   FontSize="14"
+											   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+											   Padding="4,6"
+											   Text="{x:Bind}" />
+								</DataTemplate>
+							</ListView.ItemTemplate>
+						</ListView>
+						<TextBlock Grid.Row="1"
+								   x:Name="EmptyResultsText"
+								   Style="{StaticResource CaptionTextBlockStyle}"
+								   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+								   VerticalAlignment="Center"
+								   HorizontalAlignment="Center"
+								   Text="Set tiles on the board to see suggestions."
+								   IsHitTestVisible="False" />
+					</Grid>
+				</Border>
+			</Grid>
+		</ScrollViewer>
+
+		<Border Grid.Row="2"
+				Padding="16,12"
+				Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+				BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+				BorderThickness="1,1,0,0">
+			<StackPanel Spacing="10">
+				<InfoBar x:Name="StatusInfoBar"
+						 IsOpen="False"
+						 IsClosable="True"
+						 Closed="StatusInfoBar_Closed"
+						 Title="Status" />
+				<TextBlock x:Name="StatusText"
+						   Style="{StaticResource BodyTextBlockStyle}"
+						   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+						   Text="Ready." />
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<Button x:Name="ApplyDropsButton"
+							Content="Apply drop-in tiles"
+							Style="{StaticResource AccentButtonStyle}"
+							IsEnabled="False"
+							Click="ApplyDrops_Click" />
+					<Button x:Name="CancelPlayButton"
+							Content="Cancel play"
+							IsEnabled="False"
+							Click="CancelPlay_Click" />
+				</StackPanel>
+			</StackPanel>
+		</Border>
+	</Grid>
 </Window>

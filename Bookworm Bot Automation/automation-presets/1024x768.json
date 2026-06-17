@@ -1,0 +1,9 @@
+{
+  "ClientWidth": 1024,
+  "ClientHeight": 768,
+  "BoardLeft": 312,
+  "BoardTop": 220,
+  "BoardRight": 712,
+  "BoardBottom": 620,
+  "CellInset": 4
+}
