@@ -544,7 +544,9 @@ namespace Bookworm_Bot_GUI
 					string bonuses = word.Bonuses.Count == 0
 						? string.Empty
 						: $" [{string.Join(", ", word.Bonuses)}]";
-					return $"{index + 1,2}. {word.Word.ToUpperInvariant(),-12} {word.Damage,5:0.0} {EmojiCatalog.Heart}  ({word.TilesUsed} {EmojiCatalog.Tile}, base {word.BaseDamage:0.0}){bonuses}";
+					string power = WordPowerRatings.GetLabel(WordPowerRatings.FromAdjustedLength(word.AdjustedLength));
+					string powerLabel = string.IsNullOrEmpty(power) ? string.Empty : $" · {power}";
+					return $"{index + 1,2}. {word.Word.ToUpperInvariant(),-12} {word.Damage,5:0.0} {EmojiCatalog.Heart}{powerLabel}  ({word.TilesUsed} {EmojiCatalog.Tile}, adj {word.AdjustedLength}){bonuses}";
 				})
 				.ToList();
 

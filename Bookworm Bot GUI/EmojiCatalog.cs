@@ -12,8 +12,8 @@ namespace Bookworm_Bot_GUI
 		public static string ForModifier(TileModifier modifier) => modifier switch
 		{
 			TileModifier.Locked => "🔒",
-			TileModifier.Cracked => "💥",
-			TileModifier.Burning => "🔥",
+			TileModifier.Smashed => "💥",
+			TileModifier.Plagued => "🦠",
 			_ => string.Empty
 		};
 

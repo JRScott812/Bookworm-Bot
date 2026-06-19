@@ -10,7 +10,8 @@ namespace Bookworm_Bot_Class
 			(TreasureId.HephaestusHammer, TreasureId.HandOfHercules),
 			(TreasureId.BowOfZyx, TreasureId.ArchOfXyzzy),
 			(TreasureId.TomeOfAncients, TreasureId.TabletOfTheAges),
-			(TreasureId.WolfbaneNecklace, TreasureId.SlayerTalisman)
+			(TreasureId.WolfbaneNecklace, TreasureId.SlayerTalisman),
+			(TreasureId.JeweledKey, TreasureId.EndlessGemPouch)
 		];
 		public static bool TryValidate(Loadout loadout, out string? error)
 		{

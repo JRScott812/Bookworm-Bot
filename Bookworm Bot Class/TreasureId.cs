@@ -13,6 +13,8 @@ namespace Bookworm_Bot_Class
 		ScimitarOfJustice,
 		WolfbaneNecklace,
 		SlayerTalisman,
-		QuadrumvirSignet
+		QuadrumvirSignet,
+		JeweledKey,
+		EndlessGemPouch
 	}
 }

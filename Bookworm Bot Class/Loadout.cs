@@ -21,6 +21,7 @@ namespace Bookworm_Bot_Class
 			ResolveUpgradeChain(TreasureId.BowOfZyx, TreasureId.ArchOfXyzzy);
 			ResolveUpgradeChain(TreasureId.TomeOfAncients, TreasureId.TabletOfTheAges);
 			ResolveUpgradeChain(TreasureId.WolfbaneNecklace, TreasureId.SlayerTalisman);
+			ResolveUpgradeChain(TreasureId.JeweledKey, TreasureId.EndlessGemPouch);
 		}
 
 		public void SetSlot(int slot, TreasureId treasure)
@@ -64,7 +65,9 @@ namespace Bookworm_Bot_Class
 			TreasureId.ScimitarOfJustice,
 			TreasureId.WolfbaneNecklace,
 			TreasureId.SlayerTalisman,
-			TreasureId.QuadrumvirSignet
+			TreasureId.QuadrumvirSignet,
+			TreasureId.JeweledKey,
+			TreasureId.EndlessGemPouch
 		];
 
 		private static readonly Dictionary<string, TreasureId> Aliases = new(StringComparer.OrdinalIgnoreCase)
@@ -88,7 +91,13 @@ namespace Bookworm_Bot_Class
 			["talisman"] = TreasureId.SlayerTalisman,
 			["quadrumvir"] = TreasureId.QuadrumvirSignet,
 			["signet"] = TreasureId.QuadrumvirSignet,
-			["qua"] = TreasureId.QuadrumvirSignet
+			["qua"] = TreasureId.QuadrumvirSignet,
+			["key"] = TreasureId.JeweledKey,
+			["jeweled"] = TreasureId.JeweledKey,
+			["jeweledkey"] = TreasureId.JeweledKey,
+			["pouch"] = TreasureId.EndlessGemPouch,
+			["endless"] = TreasureId.EndlessGemPouch,
+			["endlessgem"] = TreasureId.EndlessGemPouch
 		};
 
 		public static string GetDisplayName(TreasureId treasure) => treasure switch
@@ -105,6 +114,8 @@ namespace Bookworm_Bot_Class
 			TreasureId.WolfbaneNecklace => "Wolfbane Necklace (+50% mammal)",
 			TreasureId.SlayerTalisman => "Slayer Talisman (+75% mammal)",
 			TreasureId.QuadrumvirSignet => "Quadrumvir Signet (+50% if word has \"qua\")",
+			TreasureId.JeweledKey => "Jeweled Key (short words can create gems)",
+			TreasureId.EndlessGemPouch => "Endless Gem Pouch (better short-word gem odds)",
 			_ => throw new ArgumentOutOfRangeException(nameof(treasure))
 		};
 

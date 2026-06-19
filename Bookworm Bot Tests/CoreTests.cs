@@ -227,6 +227,56 @@ namespace Bookworm_Bot_Tests
 			float normal = profile.CalculateDamage("bear", WordCategory.Mammals, gemBonus: 0f);
 			Assert.IsGreaterThan(normal, weak);
 		}
+
+		[TestMethod]
+		public void Smashed_tiles_contribute_zero_to_adjusted_length()
+		{
+			Loadout loadout = new();
+			List<Tile> used =
+			[
+				new Tile('z', Modifier: TileModifier.Smashed),
+				new Tile('o'),
+				new Tile('o')
+			];
+			int withSmashed = AbilityProfile.CalculateAdjustedLength("zoo", used, loadout);
+			int normal = AbilityProfile.CalculateAdjustedLength("zoo");
+			Assert.AreEqual(2, withSmashed);
+			Assert.AreEqual(4, normal);
+		}
+
+		[TestMethod]
+		public void Plagued_tiles_contribute_zero_to_adjusted_length()
+		{
+			List<Tile> used =
+			[
+				new Tile('c', Modifier: TileModifier.Plagued),
+				new Tile('a'),
+				new Tile('t')
+			];
+			Assert.AreEqual(2, AbilityProfile.CalculateAdjustedLength("cat", used, new Loadout()));
+		}
+	}
+
+	[TestClass]
+	public sealed class GameMechanicsTests
+	{
+		[TestMethod]
+		public void Word_power_ratings_match_readme_order()
+		{
+			Assert.AreEqual(WordPowerRating.Good, WordPowerRatings.FromAdjustedLength(3));
+			Assert.AreEqual(WordPowerRating.Wow, WordPowerRatings.FromAdjustedLength(4));
+			Assert.AreEqual(WordPowerRating.Astonishing, WordPowerRatings.FromAdjustedLength(12));
+			Assert.AreEqual("Very Good", WordPowerRatings.GetLabel(WordPowerRating.VeryGood));
+		}
+
+		[TestMethod]
+		public void Jeweled_key_reports_short_word_gem_odds()
+		{
+			Loadout loadout = new() { Slot1 = TreasureId.JeweledKey };
+			string? description = GemDropCalculator.DescribeShortWordGemChance(loadout, adjustedLength: 5);
+			Assert.IsNotNull(description);
+			Assert.Contains("75", description);
+		}
 	}
 
 	[TestClass]
@@ -256,6 +306,25 @@ namespace Bookworm_Bot_Tests
 			List<Tile> tiles = LetterInput.Parse("q u i z");
 			Assert.IsTrue(solver.TryFindBestWord(tiles, "quiz", out WordResult result));
 			Assert.AreEqual(3, result.TilesUsed);
+		}
+
+		[TestMethod]
+		public void Smashed_tile_reduces_solver_damage()
+		{
+			WordDictionary dictionary = LoadMiniDictionary();
+			Solver solver = new(dictionary, new AbilityProfile());
+
+			GridBoard board = new();
+			board.SetCell(0, new GridCell('g', Modifier: TileModifier.Smashed));
+			board.SetCell(1, new GridCell('o'));
+			board.SetCell(2, new GridCell('l'));
+			board.SetCell(3, new GridCell('d'));
+
+			IReadOnlyList<WordResult> results = solver.FindWords(board.GetPlayableTiles().Tiles, topCount: 10);
+			WordResult? gold = results.FirstOrDefault(result => result.Word == "gold");
+			Assert.IsNotNull(gold);
+			Assert.AreEqual(3, gold.Value.AdjustedLength);
+			Assert.AreEqual(0.5f, gold.Value.Damage, 0.001f);
 		}
 	}
 

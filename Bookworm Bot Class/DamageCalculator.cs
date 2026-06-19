@@ -88,6 +88,14 @@ namespace Bookworm_Bot_Class
 				bonuses.Add("letter tile bonus");
 			}
 
+			string? gemDrop = GemDropCalculator.DescribeShortWordGemChance(
+				profile.Loadout,
+				AbilityProfile.CalculateAdjustedLength(word, usedTilesInOrder, profile.Loadout));
+			if (gemDrop is not null)
+			{
+				bonuses.Add(gemDrop);
+			}
+
 			return bonuses;
 		}
 

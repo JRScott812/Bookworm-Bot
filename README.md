@@ -36,15 +36,36 @@ Or run **Bookworm Bot GUI** from Visual Studio (x64, Unpackaged profile).
 
 ### Using the board
 
-1. **Tap a tile** on the 4×4 grid to open the editor — set letter, gem (emoji picker), and status (none / locked / cracked / burning / empty).
-2. Configure **loadout** (enemy, treasures, lex level) on the left.
-3. **Refresh words** to see ranked suggestions with damage.
+1. **Tap a tile** on the 4×4 grid to open the editor — set letter, gem (emoji picker), and status (none / locked / smashed / plagued / empty).
+2. Configure **loadout** (enemy, treasures, lex level, power-up potion) on the left.
+3. **Refresh words** to see ranked suggestions with damage and Lex word-power labels (Good → Astonishing).
 4. **Select a word** — used tiles highlight on the grid.
 5. Edit the highlighted cells with drop-in letters, then click **Apply drop-in tiles**.
 
-Locked and empty cells are excluded from word finding. Cracked and burning tiles are playable (visual only in v1).
+Locked tiles are excluded from word finding. **Smashed** and **plagued** tiles can be used in words but contribute **zero** to adjusted word length (matching the game). Empty cells are ignored until filled.
 
 Use **Sample board** for a quick demo, or **Clear board** to reset.
+
+## Scoring (from BWA Deluxe)
+
+Damage uses **adjusted word length** (letter pip values summed and rounded up):
+
+| Pip tier | Letters | Weight |
+|----------|---------|--------|
+| Bronze | A E I O U D G L N R S T | 1.0 |
+| Silver | B C F H M P | 1.25 |
+| Silver | V W Y | 1.5 |
+| Gold | J K | 1.75 |
+| Gold | X Z | 2.0 |
+| Gold | Qu | 2.75 |
+
+Base damage by adjusted length (hearts): 3→0.5, 4→0.75, 5→1, 6→1.5, 7→2, 8→2.75, 9→3.5, 10→4.5, 11→5.5, 12→6.75, 13→8, 14→9.5, 15→11, 16→13.
+
+**Gems** add stacking damage bonuses: Amethyst +15%, Emerald +20%, Sapphire +25%, Garnet +30%, Ruby +35%, Crystal +50%, Diamond +100%.
+
+**Power-up potion** (+25% damage) and **Lex level** attack bonuses are supported in loadout settings. **Jeweled Key** / **Endless Gem Pouch** show short-word gem creation odds in suggestion bonuses.
+
+Words must be at least **3 letters** (some enemies require 4+). Tiles are selected from anywhere on the 4×4 grid — they need not be adjacent (unlike original Bookworm).
 
 ## CLI (advanced)
 
@@ -100,6 +121,6 @@ Optional flags: `--save-frame` (writes `last-frame.png`), `--dump-board` (shows 
 ### Limitations (v1)
 
 - Suggest only — does not click or type words in the game.
-- Tile modifiers (locked, burning, cracked) are not detected; all recognized tiles are treated as normal.
+- Tile modifiers (locked, smashed, plagued) are not detected by automation; all recognized tiles are treated as normal.
 - Letter recognition uses Windows OCR; accuracy depends on resolution and calibration.
 - During drop-in (partial board), suggestions appear only when enough tiles are recognized.

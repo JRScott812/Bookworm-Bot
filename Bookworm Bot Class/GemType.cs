@@ -15,9 +15,11 @@ namespace Bookworm_Bot_Class
 		Diamond
 	}
 
-	public readonly record struct Tile(char Letter, GemType Gem = GemType.None)
+	public readonly record struct Tile(char Letter, GemType Gem = GemType.None, TileModifier Modifier = TileModifier.None)
 	{
 		public float DamageBonus => GemBonuses.GetDamageBonus(Gem);
+
+		public bool ContributesToDamage => TileModifierRules.ContributesToDamage(Modifier);
 		public string Display =>
 			Letter == 'q'
 				? Gem == GemType.None ? "qu" : $"qu({GemBonuses.ShortName(Gem)})"

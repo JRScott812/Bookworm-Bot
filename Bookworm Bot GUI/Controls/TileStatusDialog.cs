@@ -118,9 +118,9 @@ namespace Bookworm_Bot_GUI.Controls
 
 				AddModifierButton(modifierRow, TileModifier.Locked, EmojiCatalog.ForModifier(TileModifier.Locked));
 
-				AddModifierButton(modifierRow, TileModifier.Cracked, EmojiCatalog.ForModifier(TileModifier.Cracked));
+				AddModifierButton(modifierRow, TileModifier.Smashed, EmojiCatalog.ForModifier(TileModifier.Smashed));
 
-				AddModifierButton(modifierRow, TileModifier.Burning, EmojiCatalog.ForModifier(TileModifier.Burning));
+				AddModifierButton(modifierRow, TileModifier.Plagued, EmojiCatalog.ForModifier(TileModifier.Plagued));
 
 
 

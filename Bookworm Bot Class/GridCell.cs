@@ -6,10 +6,10 @@ namespace Bookworm_Bot_Class
 
 		public bool IsEmpty => Letter is null;
 
-		public bool IsPlayable => !IsEmpty && Modifier != TileModifier.Locked;
+		public bool IsPlayable => !IsEmpty && TileModifierRules.IsPlayable(Modifier);
 
-		public Tile ToTile() => new(Letter!.Value, Gem);
+		public Tile ToTile() => new(Letter!.Value, Gem, Modifier);
 
-		public static GridCell FromTile(Tile tile) => new(tile.Letter, tile.Gem);
+		public static GridCell FromTile(Tile tile) => new(tile.Letter, tile.Gem, tile.Modifier);
 	}
 }

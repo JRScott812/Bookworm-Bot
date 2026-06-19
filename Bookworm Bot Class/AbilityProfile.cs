@@ -94,7 +94,12 @@ namespace Bookworm_Bot_Class
 
 				if (usedTilesInOrder is not null && tileIndex < usedTilesInOrder.Count)
 				{
-					total += GetTreasureLetterWeight(usedTilesInOrder[tileIndex].Letter, loadout);
+					Tile tile = usedTilesInOrder[tileIndex];
+					if (tile.ContributesToDamage)
+					{
+						total += GetTreasureLetterWeight(tile.Letter, loadout);
+					}
+
 					tileIndex++;
 				}
 				else
